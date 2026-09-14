@@ -5,6 +5,7 @@ import { StageMount } from "@/components/three/StageMount";
 import { Navbar } from "@/components/navigation/Navbar";
 import { Loader } from "@/components/ui/Loader";
 import { Footer } from "@/components/ui/Footer";
+import { useOpeningSnap } from "@/lib/use-opening-snap";
 
 import { Hero } from "@/components/sections/Hero";
 import { Movement } from "@/components/sections/Movement";
@@ -19,6 +20,7 @@ import { Finale } from "@/components/sections/Finale";
 export function Landing() {
   const [started, setStarted] = useState(false);
   const onDone = useCallback(() => setStarted(true), []);
+  useOpeningSnap(started);
 
   return (
     <>

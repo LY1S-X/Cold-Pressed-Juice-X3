@@ -3,11 +3,11 @@
 import { useRef } from "react";
 import { SCENES, useSceneChoreography, vw } from "@/lib/choreography";
 import { SectionIndex } from "@/components/ui/SectionIndex";
+import styles from "./Movement.module.css";
 
 /**
- * Scene 02 — the product leaves the hero and crosses the viewport while the
- * type runs the other way. Everything is on one scrubbed timeline, so the
- * opposing travel stays locked no matter how fast the user scrolls.
+ * Scene 02 — a diagonal product between Original and Cold-Pressed, with
+ * Kick-Start in the foreground. The section retains both hand-off poses.
  */
 export function Movement() {
   const ref = useRef<HTMLElement>(null);
@@ -15,7 +15,10 @@ export function Movement() {
   useSceneChoreography(ref, SCENES.movement, {
     theme: "beige",
     build: (tl, device) => {
-      const t = device === "mobile" ? 0.05 : device === "tablet" ? 0.08 : 0.11;
+      const t = device === "mobile" ? 0.008 : 0.015;
+      tl.fromTo("[data-mv-shadow]", { opacity: 0 }, { opacity: 1, duration: 0.14 }, 0.12);
+      tl.to("[data-mv-shadow]", { x: vw(-0.03), duration: 0.4 }, 0.22);
+      tl.to("[data-mv-shadow]", { opacity: 0, duration: 0.14 }, 0.62);
 
       /* Parallax lives on the clipping wrapper, reveals on the inner line —
          two tweens on one element's transform is how a GSAP timeline quietly
@@ -47,6 +50,7 @@ export function Movement() {
         { opacity: 1, y: 0, ease: "power2.out", duration: 0.26 },
         0.1,
       );
+      tl.to("[data-wx='original'], [data-word='ghost']", { opacity: 0, duration: 0.16 }, 0.66);
     },
   });
 
@@ -57,26 +61,23 @@ export function Movement() {
       aria-labelledby="movement-title"
       className="relative h-[220svh] md:h-[260svh]"
     >
-      {/* ---- behind the product ---- */}
+      <h2 id="movement-title" className="sr-only">Original Kick-Start</h2>
+
+      {/* The two side words frame the bottle's diagonal silhouette. */}
       <div className="layer-behind h-svh overflow-hidden">
-        <div className="absolute inset-0 flex flex-col justify-start pt-[15svh] md:justify-center md:pt-0">
-          <h2 id="movement-title" className="no-wrap">
+        <span data-mv-shadow className={styles.shadow} aria-hidden="true" />
+        <div className={styles.original} aria-hidden="true">
             <span data-wx="original" className="mask block">
-              <span data-word="original" className="display t-mega no-wrap block pl-[7vw]">
+              <span data-word="original" className={`display no-wrap block ${styles.originalType}`}>
                 Original
               </span>
             </span>
-            <span data-wx="kickstart" className="mask block">
-              <span data-word="kickstart" className="display t-mega no-wrap block pl-[15vw]">
-                Kick-Start
-              </span>
-            </span>
-          </h2>
-
+        </div>
+        <div className={styles.coldPressed}>
           <span
             data-word="ghost"
             aria-hidden="true"
-            className="display outline-type ghost-reduce t-xl no-wrap mt-3 block pl-[22vw] opacity-55"
+            className={`display outline-type ghost-reduce no-wrap block opacity-55 ${styles.coldType}`}
           >
             Cold-Pressed
           </span>
@@ -85,6 +86,13 @@ export function Movement() {
 
       {/* ---- in front of the product ---- */}
       <div className="layer-front -mt-[100svh] h-svh">
+        <div className={styles.kickStart} aria-hidden="true">
+          <span data-wx="kickstart" className="mask block">
+            <span data-word="kickstart" className={`display no-wrap block ${styles.kickType}`}>
+              Kick-Start
+            </span>
+          </span>
+        </div>
         <div className="absolute inset-x-0 top-[16svh] px-5 md:px-8 lg:px-10">
           <div data-mv-meta className="opacity-0">
             <SectionIndex n="02" label="The Product" />

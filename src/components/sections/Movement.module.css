@@ -1,0 +1,55 @@
+.original {
+  position: absolute;
+  left: 4vw;
+  top: 29svh;
+}
+.originalType { font-size: min(10vw, 17svh); }
+.kickStart {
+  position: absolute;
+  left: 8vw;
+  top: 46svh;
+}
+.kickType { font-size: min(13vw, 22svh); }
+.coldPressed {
+  position: absolute;
+  left: 55vw;
+  top: 70svh;
+}
+.coldType { font-size: 5.5vw; }
+
+/* A horizontal, diffuse floor shadow suits a suspended bottle. It lives
+   outside the rotated model and fades before the next hand-off. */
+.shadow {
+  position: absolute;
+  left: 43%;
+  top: 86svh;
+  width: min(30vw, 42svh);
+  height: 5svh;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(58 36 16 / 27%), rgb(58 36 16 / 10%) 40%, transparent 72%);
+  filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .shadow { top: 81svh; }
+}
+
+@media (max-width: 767px) {
+  .original { left: 5vw; top: 23svh; }
+  .originalType { font-size: 13vw; }
+  .kickStart { left: 5vw; top: 47svh; }
+  .kickType { font-size: 15vw; }
+  .coldPressed { left: 24vw; top: 77svh; }
+  .coldType { font-size: 9.5vw; }
+}
+
+@media (max-width: 639px) {
+  .shadow { left: 31%; top: 75svh; width: 44vw; height: 3svh; filter: blur(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shadow { display: none; }
+}

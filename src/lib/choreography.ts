@@ -25,6 +25,8 @@ export type Keyframe = {
   mobile?: ScenePose;
   tablet?: ScenePose;
   ease?: string;
+  /** Only the opening hero fits a reserved, responsive product column. */
+  heroViewport?: boolean;
 };
 
 const NX = { desktop: 1, tablet: 0.95, mobile: 0.44 };
@@ -52,6 +54,20 @@ export function resolveKeyframe(k: Keyframe, device: Device): ScenePose {
     device === "mobile" ? k.mobile : device === "tablet" ? k.tablet : undefined;
   const merged: ScenePose = override ? { ...base, ...override } : base;
   if (typeof merged.height === "number") merged.height *= PRODUCT_FIT;
+  if (k.heroViewport && typeof window !== "undefined") {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const stacked = width < 768;
+    const productTop = Math.max(height * 0.315, Math.max(100, height * 0.13) + width * 0.115 * 2.83 + 16);
+    const productBottom = height * 0.695;
+    Object.assign(merged, {
+      nx: stacked ? 0 : 0.50,
+      ny: stacked ? 1 - (productTop + productBottom) / height : 0.07,
+      // Limit width as well as height on portrait tablets. The real model
+      // is about 0.34 as wide as it is tall; allow room for its rotation.
+      height: stacked ? Math.max(0.12, (productBottom - productTop) / height) : Math.min(0.68, (width * 0.25) / (height * 0.37)),
+    });
+  }
   return merged;
 }
 
@@ -79,6 +95,17 @@ const LIGHT_ORANGE = {
   shadowMul: 0.55,
 };
 
+// Section 02's floating product: directional highlights, soft fill and rim.
+const LIGHT_PRODUCT = {
+  ...LIGHT_NEUTRAL,
+  keyMul: 1.18,
+  fillMul: 0.7,
+  rimMul: 1.4,
+  envMul: 1.1,
+  exposureMul: 1.02,
+  shadowMul: 0,
+};
+
 const LIGHT_FOREST = {
   keyMul: 1.1,
   fillMul: 0.8,
@@ -101,15 +128,22 @@ const LIGHT_DRAMATIC = {
 
 /** Where the bottle rests as the hero finishes its intro. */
 export const HERO_POSE: ScenePose = {
-  nx: 0.19,
-  ny: -0.04,
+  nx: 0.50,
+  ny: 0.07,
   z: 0,
   rx: 0,
   ry: -0.28,
-  rz: 0.01,
-  height: 0.88,
+  rz: 0,
+  height: 0.68 / PRODUCT_FIT,
   opacity: 1,
   ...LIGHT_NEUTRAL,
+  // Hero-only studio balance: brighter reflections and a defined lit edge,
+  // with less flat fill. The existing exit restores the neutral light rig.
+  exposureMul: 1.0,
+  keyMul: 1.18,
+  envMul: 1.12,
+  fillMul: 0.72,
+  rimMul: 1.3,
 };
 
 export const HERO_POSE_MOBILE: ScenePose = {
@@ -169,13 +203,27 @@ const P_FINALE_M: ScenePose = { nx: 0.34, ny: -0.36, height: 0.36 };
 export const SCENES: Record<string, Keyframe[]> = {
   /* 1 — hero drift ---------------------------------------------------- */
   hero: [
-    { at: 0, pose: { ...HERO_POSE }, mobile: { ...HERO_POSE_MOBILE } },
+    { at: 0, pose: { ...HERO_POSE }, mobile: { ...HERO_POSE_MOBILE }, heroViewport: true },
     { at: 1, pose: { ...HERO_EXIT }, mobile: { ...HERO_EXIT_M }, ease: "power1.in" },
   ],
 
   /* 2 — product movement ---------------------------------------------- */
   movement: [
     { at: 0, pose: { ...HERO_EXIT }, mobile: { ...HERO_EXIT_M } },
+    {
+      at: 0.22,
+      pose: { nx: 0.12, ny: 0.02, z: 0, height: 1.12, rx: 0, ry: -0.18, rz: -0.58, ...LIGHT_PRODUCT },
+      mobile: { nx: 0, ny: -0.03, height: 0.72, rz: -0.48 },
+      tablet: { nx: 0.12, height: 0.94 },
+      ease: "power2.inOut",
+    },
+    {
+      at: 0.62,
+      pose: { nx: 0.06, ny: 0.02, z: 0, height: 1.12, rx: 0, ry: -0.08, rz: -0.62, ...LIGHT_PRODUCT },
+      mobile: { nx: -0.02, ny: -0.03, height: 0.72, rz: -0.52 },
+      tablet: { nx: 0.06, height: 0.94 },
+      ease: "none",
+    },
     { at: 1, pose: { ...P_INGREDIENTS }, mobile: { ...P_INGREDIENTS_M } },
   ],
 
@@ -492,7 +540,12 @@ export function useSceneChoreography(
         const dur = Math.max(0.0001, keys[i].at - keys[i - 1].at);
         tl.fromTo(
           SCENE,
-          { ...from },
+          keys[i - 1].heroViewport
+            ? Object.fromEntries(Object.keys(from).map((key) => [
+                key,
+                () => resolveKeyframe(keys[i - 1], readDevice())[key as keyof ScenePose],
+              ]))
+            : { ...from },
           {
             ...to,
             duration: dur,
