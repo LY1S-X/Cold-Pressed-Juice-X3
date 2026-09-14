@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #f5f2ea;
+  --color-beige: #ece8de;
+  --color-ink: #151515;
+  --color-forest: #174b36;
+  --color-sage: #73906d;
+  --color-juice: #f4700a;
+
+  --font-display: var(--font-archivo), "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------------------------------------------------------------
+   Scene tokens — driven imperatively by the GSAP choreography.
+   Never transition these in CSS; the scroll timeline owns them.
+---------------------------------------------------------------- */
+:root {
+  --scene-bg: #f5f2ea;
+  --scene-fg: #151515;
+  --scene-dim: rgba(21, 21, 21, 0.55);
+  --scene-line: rgba(21, 21, 21, 0.14);
+  --vh: 1vh;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background-color: var(--scene-bg);
+  scroll-behavior: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: transparent;
+  color: var(--scene-fg);
+  font-family: var(--font-sans);
+  overscroll-behavior-y: none;
+}
+
+::selection {
+  background: var(--color-juice);
+  color: #fff;
+}
+
+/* The page wrapper clips runaway horizontal translation without
+   creating a scroll container (so position:sticky keeps working). */
+.page-clip {
+  overflow-x: clip;
+}
+
+/* ---------------------------------------------------------------
+   Stacking layers.
+   The WebGL stage is fixed at z-index 20. Sections themselves keep
+   `z-index: auto` so their sticky children participate in the root
+   stacking context and can sit in front of or behind the bottle.
+---------------------------------------------------------------- */
+.layer-behind {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.layer-front {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+.stage-layer {
+  z-index: 20;
+}
+
+/* ---------------------------------------------------------------
+   Display typography
+---------------------------------------------------------------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "wdth" 88, "wght" 800;
+  text-transform: uppercase;
+  line-height: 0.8;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+.display-thin {
+  font-variation-settings: "wdth" 88, "wght" 500;
+  font-weight: 500;
+}
+
+.t-mega {
+  font-size: clamp(2.2rem, 13vw, 14rem);
+}
+.t-xl {
+  font-size: clamp(1.9rem, 9.4vw, 10rem);
+}
+.t-lg {
+  font-size: clamp(1.6rem, 6.4vw, 6.5rem);
+}
+.t-md {
+  font-size: clamp(1.35rem, 4.1vw, 3.5rem);
+}
+.t-sm {
+  font-size: clamp(1rem, 2.3vw, 2rem);
+}
+
+/* Long display lines are allowed to wrap on a phone: a nowrap line that runs
+   off the edge reads as breakage, not as a crop. */
+@media (max-width: 640px) {
+  .wrap-sm {
+    white-space: normal;
+  }
+}
+
+.t-label {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: clamp(0.62rem, 0.78vw, 0.78rem);
+  font-weight: 500;
+}
+
+.t-body {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.32vw, 1.3rem);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+
+/* Masked reveal: the clip lives on the wrapper, motion on the child. */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+.mask > * {
+  display: block;
+  will-change: transform;
+}
+
+.outline-type {
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--scene-fg);
+  paint-order: stroke fill;
+  opacity: 0.6;
+}
+@media (min-width: 768px) {
+  .outline-type {
+    -webkit-text-stroke-width: 2.8px;
+    opacity: 1;
+  }
+}
+
+/* Display headings need their own measure: `ch` resolves against the
+   element's own font-size, and these headings size their children. */
+.measure-sm {
+  max-width: 11em;
+}
+.measure-md {
+  max-width: 16em;
+}
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+.rule {
+  height: 1px;
+  background: var(--scene-line);
+  width: 100%;
+}
+
+/* Hairline hover underline for nav + links */
+.link-u {
+  position: relative;
+}
+.link-u::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.28em;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-u:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-u::after {
+    transition: none;
+  }
+
+  /* Compositions that rely on one element travelling past another need a
+     static fallback, or every layer lands in the same place at once. */
+  .stack-reduce {
+    position: static !important;
+    display: flex;
+    flex-direction: column;
+    gap: 0.04em;
+    padding-top: 0;
+  }
+  .stack-reduce > * {
+    position: static !important;
+    opacity: 1 !important;
+    transform: none !important;
+    text-align: left !important;
+  }
+  .ghost-reduce {
+    display: none !important;
+  }
+}
