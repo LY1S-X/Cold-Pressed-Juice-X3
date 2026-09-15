@@ -1,0 +1,23 @@
+.heading { position: absolute; left: 3.3%; top: 17svh; width: 46%; }
+.title { font-size: min(9.2vw, 15svh); line-height: .84; letter-spacing: -.045em; }
+.claims { position: absolute; left: 3.3%; top: 45svh; width: 39.5%; }
+.claim { display: flex; align-items: center; gap: 2.2vw; height: 10.4svh; padding: 0 1vw; font-size: clamp(14px, 1.75vw, 29px); line-height: 1.15; font-weight: 450; letter-spacing: .015em; text-transform: uppercase; }
+.icon { width: min(4.5vw, 7.2svh); height: min(4.5vw, 7.2svh); flex-shrink: 0; }
+.rule { display: block; height: 1px; background: currentColor; opacity: .35; transform-origin: left; }
+.firstRule { display: none; }
+.atmosphere { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 72% 45%, rgb(174 194 134 / 8%), transparent 60%); }
+.halo { position: absolute; left: 52%; top: 14svh; width: 38vw; height: 38vw; max-height: 62svh; max-width: 62svh; border-radius: 50%; border: 1px solid rgb(245 242 234 / 7%); background: radial-gradient(circle at 65% 35%, rgb(193 210 148 / 10%), rgb(193 210 148 / 3%)); }
+.shadow { position: absolute; left: 71%; top: 85.5svh; width: 24vw; height: 3svh; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(ellipse, rgb(0 18 11 / 40%), transparent 70%); filter: blur(5px); }
+.footer { position: absolute; left: 3.3%; right: 3.3%; bottom: 4.5svh; border-top: 1px solid rgb(245 242 234 / 35%); padding-top: 2.2svh; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.productMeta { font-size: clamp(9px, .78vw, 13px); letter-spacing: .2em; }
+@media (max-width: 639px) {
+  .heading { top: 14svh; left: 6%; width: 88%; }
+  .title { font-size: min(15vw, 9svh); }
+  .claims { left: 6%; top: 61svh; width: 88%; }
+  .claim { height: 6.5svh; gap: 15px; font-size: clamp(11px, 3.3vw, 17px); padding: 0; }
+  .icon { width: 4.6svh; height: 4.6svh; }
+  .halo { top: 31svh; left: 25%; width: 50vw; height: 28svh; }
+  .shadow { left: 50%; top: 59svh; width: 40vw; height: 2svh; }
+  .footer { left: 6%; right: 6%; bottom: 3svh; padding-top: 1.5svh; }
+  .productMeta { display: none; }
+}

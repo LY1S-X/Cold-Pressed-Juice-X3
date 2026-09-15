@@ -38,6 +38,7 @@ export const THEMES = {
   beige: theme(BRAND.beige, BRAND.ink, 0.55, 0.14),
   juice: theme(BRAND.juice, BRAND.white, 0.78, 0.3),
   forest: theme(BRAND.forest, BRAND.cream, 0.62, 0.2),
+  emerald: theme("#005237", BRAND.cream, 0.72, 0.26),
   ink: theme(BRAND.ink, BRAND.cream, 0.55, 0.16),
 } satisfies Record<string, SceneTheme>;
 

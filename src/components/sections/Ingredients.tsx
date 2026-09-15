@@ -15,6 +15,7 @@ export function Ingredients() {
 
   useSceneChoreography(ref, SCENES.ingredients, {
     theme: "juice",
+    fadeAt: 0.97,
     build: (tl, device) => {
       const m = device === "mobile";
       const reach = m ? 0.3 : 0.4;
@@ -23,32 +24,43 @@ export function Ingredients() {
         key: string;
         from: number;
         to: number;
+        out: number;
         at: number;
-        span: number;
+        enter: number;
+        hold: number;
+        exit: number;
       }> = [
-        { key: "pineapple", from: -reach, to: m ? 0.04 : 0.13, at: 0.0, span: 0.26 },
-        { key: "apple", from: reach, to: m ? -0.04 : -0.11, at: 0.19, span: 0.26 },
-        { key: "carrot", from: m ? -0.12 : -0.06, to: m ? 0.1 : 0.06, at: 0.38, span: 0.26 },
-        { key: "ginger", from: reach * 0.9, to: m ? -0.06 : -0.17, at: 0.57, span: 0.26 },
+        { key: "pineapple", from: -reach, to: m ? 0.02 : 0.08, out: m ? -0.08 : -0.1, at: 0.0, enter: 0.14, hold: 0.08, exit: 0.08 },
+        { key: "apple", from: reach, to: m ? -0.02 : -0.06, out: m ? 0.08 : 0.1, at: 0.25, enter: 0.14, hold: 0.08, exit: 0.08 },
+        { key: "carrot", from: -reach * 0.75, to: m ? 0.02 : 0.06, out: m ? -0.08 : -0.1, at: 0.5, enter: 0.14, hold: 0.08, exit: 0.08 },
+        { key: "ginger", from: reach * 0.9, to: m ? -0.02 : -0.08, out: m ? 0.08 : 0.1, at: 0.64, enter: 0.14, hold: 0.18, exit: 0.08 },
       ];
 
       beats.forEach((b) => {
+        const exitAt = b.at + b.enter + b.hold;
+
         tl.fromTo(
           `[data-ing='${b.key}']`,
           { x: vw(b.from), opacity: 0 },
-          { x: vw(b.to), opacity: 1, ease: "none", duration: b.span },
+          { x: vw(b.to), opacity: 1, ease: "power2.out", duration: b.enter },
           b.at,
         );
         tl.fromTo(
           `[data-ing-ghost='${b.key}']`,
           { x: vw(b.from * 1.55), opacity: 0 },
-          { x: vw(b.to * 1.9), opacity: 0.5, ease: "none", duration: b.span },
+          { x: vw(b.to * 1.9), opacity: 0.5, ease: "power2.out", duration: b.enter },
           b.at,
         );
+        tl.to(`[data-ing='${b.key}']`, {
+          x: vw(b.out),
+          opacity: 0,
+          ease: "power2.in",
+          duration: b.exit,
+        }, exitAt);
         tl.to(
-          [`[data-ing='${b.key}']`, `[data-ing-ghost='${b.key}']`],
-          { opacity: 0, ease: "power1.in", duration: 0.12 },
-          b.at + b.span,
+          `[data-ing-ghost='${b.key}']`,
+          { x: vw(b.out * 1.65), opacity: 0, ease: "power2.in", duration: b.exit },
+          exitAt,
         );
       });
 
@@ -69,6 +81,7 @@ export function Ingredients() {
 
   return (
     <section
+      id="ingredients"
       ref={ref}
       aria-labelledby="ingredients-title"
       className="relative h-[340svh] md:h-[420svh]"

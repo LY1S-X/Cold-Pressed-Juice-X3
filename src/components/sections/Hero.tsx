@@ -23,12 +23,10 @@ export function Hero({ started }: { started: boolean }) {
 
   // The original exit pose still matches Movement's first keyframe exactly.
   useSceneChoreography(ref, SCENES.hero, {
-    theme: "cream", start: "top top", end: "bottom top",
+    theme: "cream", start: "top top", end: "bottom top", fadeOut: false,
     build: (tl) => {
       tl.to("[data-hero-shadow]", { opacity: 0, duration: 0.2 }, 0);
-      tl.to("[data-hero-type]", { yPercent: -16, duration: 1 }, 0);
-      tl.to("[data-hero-copy]", { y: -35, opacity: 0, duration: 0.5 }, 0);
-      tl.to("[data-hero-foot]", { opacity: 0, duration: 0.35 }, 0);
+      // The hero leaves naturally with the document, like one continuous page.
     },
   });
 

@@ -155,10 +155,10 @@ export const HERO_POSE_MOBILE: ScenePose = {
 
 /** Where the hero hands the product over to the first scrubbed scene. */
 const HERO_EXIT: ScenePose = {
-  nx: 0.25, ny: 0.07, z: 0, rx: 0, ry: -0.09, rz: -0.01, height: 0.93,
+  nx: 0.25, ny: -0.24, z: 0, rx: 0, ry: -0.09, rz: -0.30, height: 0.93,
   ...LIGHT_NEUTRAL,
 };
-const HERO_EXIT_M: ScenePose = { nx: 0.12, ny: -0.16, height: 0.6, ry: -0.06 };
+const HERO_EXIT_M: ScenePose = { nx: 0.12, ny: -0.16, height: 0.6, ry: -0.06, rz: -0.25 };
 
 /* Hand-off poses. Each scene's last keyframe is the next scene's first, so the
    product keeps travelling through the 100vh in which one sticky panel scrolls
@@ -204,18 +204,18 @@ export const SCENES: Record<string, Keyframe[]> = {
   /* 1 — hero drift ---------------------------------------------------- */
   hero: [
     { at: 0, pose: { ...HERO_POSE }, mobile: { ...HERO_POSE_MOBILE }, heroViewport: true },
-    { at: 1, pose: { ...HERO_EXIT }, mobile: { ...HERO_EXIT_M }, ease: "power1.in" },
+    { at: 1, pose: { ...HERO_EXIT }, mobile: { ...HERO_EXIT_M }, ease: "none" },
   ],
 
   /* 2 — product movement ---------------------------------------------- */
   movement: [
     { at: 0, pose: { ...HERO_EXIT }, mobile: { ...HERO_EXIT_M } },
     {
-      at: 0.22,
+      at: 0.34,
       pose: { nx: 0.12, ny: 0.02, z: 0, height: 1.12, rx: 0, ry: -0.18, rz: -0.58, ...LIGHT_PRODUCT },
       mobile: { nx: 0, ny: -0.03, height: 0.72, rz: -0.48 },
       tablet: { nx: 0.12, height: 0.94 },
-      ease: "power2.inOut",
+      ease: "power1.out",
     },
     {
       at: 0.62,
@@ -255,10 +255,17 @@ export const SCENES: Record<string, Keyframe[]> = {
   benefits: [
     { at: 0, pose: { ...P_BENEFITS }, mobile: { ...P_BENEFITS_M } },
     {
-      at: 0.42,
-      pose: { nx: 0.38, ny: 0.3, height: 1.0, ry: -0.12, rz: -0.02, ...LIGHT_FOREST },
-      mobile: { nx: 0.32, ny: -0.42, height: 0.46 },
+      at: 0.18,
+      pose: { nx: 0.42, ny: 0.0, height: 1.08, ry: 0.28, rz: 0, ...LIGHT_FOREST, shadowMul: 0.8 },
+      mobile: { nx: 0, ny: 0.1, height: 0.42 },
+      tablet: { nx: 0.42, ny: 0, height: 0.98 },
       ease: "power1.inOut",
+    },
+    {
+      at: 0.70,
+      pose: { nx: 0.42, ny: 0.0, height: 1.08, ry: 0.28, rz: 0, ...LIGHT_FOREST, shadowMul: 0.8 },
+      mobile: { nx: 0, ny: 0.1, height: 0.42 },
+      tablet: { nx: 0.42, ny: 0, height: 0.98 },
     },
     { at: 1, pose: { ...P_CLOSEUP }, mobile: { ...P_CLOSEUP_M }, ease: "power1.inOut" },
   ],
@@ -409,6 +416,7 @@ const ALPHA: Record<keyof typeof THEMES, [number, number]> = {
   beige: [0.55, 0.14],
   juice: [0.8, 0.34],
   forest: [0.64, 0.22],
+  emerald: [0.72, 0.26],
   ink: [0.56, 0.18],
 };
 
@@ -452,6 +460,8 @@ type SceneOptions = {
   build?: (tl: gsap.core.Timeline, device: Device) => void;
   /** Set false for sections that should stay opaque through their release. */
   fadeOut?: boolean;
+  /** Timeline position where the section panels begin their release fade. */
+  fadeAt?: number;
 };
 
 /**
@@ -574,7 +584,7 @@ export function useSceneChoreography(
             panels,
             { opacity: 1 },
             { opacity: 0, ease: "power1.in", duration: 0.14, immediateRender: false },
-            0.87,
+            opts.fadeAt ?? 0.87,
           );
         }
       }
