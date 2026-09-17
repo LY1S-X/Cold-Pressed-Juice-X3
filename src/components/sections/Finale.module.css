@@ -1,0 +1,27 @@
+.heading { position: absolute; inset-inline: 3%; top: 11svh; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.mark { width: 3svh; height: 3svh; margin-bottom: 1.3svh; opacity: 0; }
+.brand { font-size: min(1.8vw, 2.8svh); letter-spacing: .3em; }
+.title { font-size: min(6.5vw, 9svh); line-height: 1; }
+.details { position: absolute; inset-inline: 3%; bottom: 3svh; }
+.grid { display: grid; grid-template-columns: 1.1fr .7fr 1fr 1.2fr; align-items: end; gap: 2vw; margin-bottom: 2.5svh; }
+.ingredients { display: grid; grid-template-columns: repeat(2, max-content); gap: .5svh 1.5vw; }
+.value { font-size: min(2.4vw, 3.5svh); line-height: 1.05; }
+.action { display: flex; justify-content: flex-end; }
+.cta { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 2svh 2vw; border-radius: 100px; background: var(--scene-fg); color: var(--scene-bg); white-space: nowrap; transition: transform .3s; }
+.cta:hover { transform: scale(1.03); }
+.motto { border-top: 1px solid var(--scene-line); padding-top: 2svh; color: var(--scene-fg); }
+@media (max-width: 1023px) {
+  .grid :global(.t-label) { font-size: 9px; letter-spacing: .12em; }
+}
+@media (max-width: 639px) {
+  .heading { top: 11svh; }
+  .brand { font-size: 3vw; }
+  .title { font-size: 6.4vw; }
+  .heading :global(.mt-3) { margin-top: 1svh; }
+  .grid { grid-template-columns: 1fr 1fr; gap: 1.5svh 4vw; margin-bottom: 2svh; }
+  .value { font-size: 4.4vw; }
+  .action { align-self: center; }
+  .cta { padding: 1.8svh 3vw; gap: 5px; white-space: normal; text-align: center; min-height: 44px; }
+  .ingredients { gap: .4svh 2vw; }
+  .motto { font-size: 8px; letter-spacing: .1em; padding-top: 1.5svh; }
+}

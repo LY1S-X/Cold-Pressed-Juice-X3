@@ -1,0 +1,17 @@
+.heading { position: absolute; left: 3.5%; top: 25svh; width: 31%; }
+.title { font-size: min(9vw, 13.5svh); line-height: .91; }
+.glow { position: absolute; left: 53%; top: 48svh; width: min(48vw, 70svh); height: 88svh; transform: translate(-50%, -50%); background: radial-gradient(ellipse, rgb(143 181 115 / 22%) 0%, rgb(99 160 104 / 12%) 30%, rgb(99 160 104 / 4%) 52%, transparent 72%); pointer-events: none; }
+.shadow { position: absolute; left: 53%; top: 85svh; width: min(25vw, 36svh); height: 4svh; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(ellipse, rgb(0 14 8 / 52%), rgb(0 14 8 / 20%) 38%, transparent 72%); filter: blur(6px); pointer-events: none; }
+@media (min-width: 640px) and (max-width: 1023px) {
+  .shadow { top: 75.2svh; width: 23vw; }
+}
+.copy { position: absolute; left: 3.5%; bottom: 7svh; width: 28%; font-size: clamp(14px, 1.3vw, 21px); line-height: 1.5; }
+.nutrition { position: absolute; right: 3.5%; top: 43svh; width: 23%; display: grid; grid-template-columns: 1fr auto; gap: 18px 16px; font-size: clamp(10px, .85vw, 14px); line-height: 1.5; text-transform: uppercase; letter-spacing: .12em; }
+@media (max-width: 639px) {
+  .glow { left: 74%; top: 40svh; width: 65vw; height: 47svh; }
+  .shadow { left: 74%; top: 57.2svh; width: 29vw; height: 2.5svh; filter: blur(4px); }
+  .heading { top: 20svh; left: 6%; width: 48%; }
+  .title { font-size: min(12vw, 7.5svh); }
+  .copy { left: 6%; bottom: 5svh; width: 88%; font-size: 12px; }
+  .nutrition { top: 62svh; left: 6%; width: 88%; gap: 6px 16px; font-size: 9px; }
+}

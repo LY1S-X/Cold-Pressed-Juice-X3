@@ -175,15 +175,16 @@ const P_BENEFITS: ScenePose = {
 const P_BENEFITS_M: ScenePose = { nx: 0.3, ny: -0.4, height: 0.5 };
 
 const P_CLOSEUP: ScenePose = {
-  nx: 0.3, ny: -0.36, z: 0, height: 1.08, ry: 0.32, rz: 0.03, ...LIGHT_FOREST,
+  nx: 0.3, ny: -0.36, z: 0, height: 1.08, ry: Math.PI, rz: 0.03, ...LIGHT_FOREST,
 };
 const P_CLOSEUP_M: ScenePose = { nx: 0.22, ny: -0.34, height: 0.58 };
 
 const P_COLDPRESSED: ScenePose = {
-  nx: 0.0, ny: 0.1, z: 0.62, height: 2.15, ry: -0.4, rz: -0.01,
-  ...LIGHT_FOREST, rimMul: 1.7, shadowMul: 0,
+  nx: 0.50, ny: 0.04, z: 0, height: 1.06, ry: -0.28, rz: 0,
+  ...LIGHT_NEUTRAL, rimMul: 1.3, shadowMul: 0,
 };
-const P_COLDPRESSED_M: ScenePose = { nx: 0, ny: 0.02, height: 1.5 };
+const P_COLDPRESSED_M: ScenePose = { nx: 0.38, ny: -0.32, height: 0.56 };
+const P_COLDPRESSED_T: ScenePose = { nx: 0.50, ny: 0.04, height: 0.96 };
 
 const P_STATEMENT: ScenePose = {
   nx: 0.48, ny: 0.0, z: 0, height: 0.96, ry: 0.56, rz: 0.03, ...LIGHT_NEUTRAL,
@@ -191,9 +192,9 @@ const P_STATEMENT: ScenePose = {
 const P_STATEMENT_M: ScenePose = { nx: 0.26, ny: -0.28, height: 0.6 };
 
 const P_STORY: ScenePose = {
-  nx: 0.12, ny: 0.0, z: 0, height: 1.1, ry: -0.38, rz: 0.0, ...LIGHT_DRAMATIC,
+  nx: -0.48, ny: 0.0, z: 0, height: 1.0, ry: -0.38, rz: -0.14, ...LIGHT_DRAMATIC,
 };
-const P_STORY_M: ScenePose = { nx: 0.2, ny: -0.34, height: 0.56 };
+const P_STORY_M: ScenePose = { nx: 0, ny: -0.47, height: 0.52 };
 
 const P_FINALE: ScenePose = {
   nx: 0.62, ny: -0.3, z: 0, height: 0.54, ry: -0.52, rz: -0.04, ...LIGHT_NEUTRAL,
@@ -276,37 +277,39 @@ export const SCENES: Record<string, Keyframe[]> = {
     {
       at: 0.34,
       pose: {
-        nx: 0.04, ny: 0.0, z: 0.45, height: 2.0, ry: 0.12, rz: 0.0,
-        ...LIGHT_FOREST, rimMul: 1.7, shadowMul: 0.08,
+        nx: 0.06, ny: 0.0, z: 0, height: 1.06, ry: Math.PI, rz: 0.0,
+        ...LIGHT_FOREST, rimMul: 1.7, shadowMul: 0.7,
       },
-      mobile: { nx: 0, ny: -0.06, height: 1.05 },
+      mobile: { nx: 0.48, ny: 0.2, height: 0.52 },
       ease: "power1.inOut",
     },
     {
-      at: 0.68,
+      at: 0.72,
       pose: {
-        nx: -0.02, ny: 0.16, z: 0.9, height: 3.05, ry: -0.34, rz: -0.01,
-        ...LIGHT_FOREST, rimMul: 1.8, envMul: 0.95, shadowMul: 0,
+        nx: 0.06, ny: 0.0, z: 0, height: 1.06, ry: Math.PI, rz: 0,
+        ...LIGHT_FOREST, rimMul: 1.8, envMul: 0.95, shadowMul: 0.7,
       },
-      mobile: { nx: 0, ny: 0.06, height: 1.7 },
+      mobile: { nx: 0.48, ny: 0.2, height: 0.52 },
       ease: "power1.inOut",
     },
-    { at: 1, pose: { ...P_COLDPRESSED }, mobile: { ...P_COLDPRESSED_M }, ease: "power1.in" },
+    { at: 1, pose: { ...P_COLDPRESSED }, mobile: { ...P_COLDPRESSED_M }, tablet: { ...P_COLDPRESSED_T }, ease: "power1.inOut" },
   ],
 
   /* 6 — why cold pressed ------------------------------------------------- */
   coldPressed: [
-    { at: 0, pose: { ...P_COLDPRESSED }, mobile: { ...P_COLDPRESSED_M } },
+    { at: 0, pose: { ...P_COLDPRESSED }, mobile: { ...P_COLDPRESSED_M }, tablet: { ...P_COLDPRESSED_T } },
     {
       at: 0.14,
-      pose: { nx: -0.54, ny: -0.02, z: 0, height: 1.0, ry: -0.12, rz: -0.03, ...LIGHT_NEUTRAL },
-      mobile: { nx: -0.26, ny: -0.3, height: 0.62 },
+      pose: { ...P_COLDPRESSED },
+      mobile: { ...P_COLDPRESSED_M },
+      tablet: { ...P_COLDPRESSED_T },
       ease: "power2.out",
     },
     {
-      at: 0.48,
-      pose: { nx: 0.0, ny: 0.03, z: 0, height: 1.12, ry: 0.22, rz: 0.0, ...LIGHT_NEUTRAL },
-      mobile: { nx: 0.04, ny: -0.3, height: 0.64 },
+      at: 0.78,
+      pose: { ...P_COLDPRESSED },
+      mobile: { ...P_COLDPRESSED_M },
+      tablet: { ...P_COLDPRESSED_T },
       ease: "power1.inOut",
     },
     { at: 1, pose: { ...P_STATEMENT }, mobile: { ...P_STATEMENT_M }, ease: "power1.inOut" },
@@ -317,14 +320,16 @@ export const SCENES: Record<string, Keyframe[]> = {
     { at: 0, pose: { ...P_STATEMENT }, mobile: { ...P_STATEMENT_M } },
     {
       at: 0.34,
-      pose: { nx: 0.0, ny: -0.02, height: 1.16, ry: 0.06, rz: -0.01, ...LIGHT_DRAMATIC },
-      mobile: { nx: 0, ny: -0.06, height: 0.66 },
+      pose: { nx: 0.0, ny: -0.21, height: 0.97, ry: -0.12, rz: -0.15, ...LIGHT_DRAMATIC },
+      mobile: { nx: 0, ny: -0.18, height: 0.82 },
+      tablet: { nx: 0, ny: -0.24, height: 0.87 },
       ease: "power2.inOut",
     },
     {
-      at: 0.62,
-      pose: { nx: 0.0, ny: 0.0, height: 1.22, ry: -0.24, rz: 0.0, ...LIGHT_DRAMATIC },
-      mobile: { nx: 0, ny: -0.04, height: 0.7 },
+      at: 0.72,
+      pose: { nx: 0.0, ny: -0.21, height: 0.97, ry: -0.12, rz: -0.15, ...LIGHT_DRAMATIC },
+      mobile: { nx: 0, ny: -0.18, height: 0.82 },
+      tablet: { nx: 0, ny: -0.24, height: 0.87 },
       ease: "power1.inOut",
     },
     { at: 1, pose: { ...P_STORY }, mobile: { ...P_STORY_M }, ease: "power1.inOut" },
@@ -333,6 +338,7 @@ export const SCENES: Record<string, Keyframe[]> = {
   /* 8 — brand story --------------------------------------------------------- */
   story: [
     { at: 0, pose: { ...P_STORY }, mobile: { ...P_STORY_M } },
+    { at: 0.72, pose: { ...P_STORY }, mobile: { ...P_STORY_M } },
     { at: 1, pose: { ...P_FINALE }, mobile: { ...P_FINALE_M }, ease: "power1.inOut" },
   ],
 
@@ -341,20 +347,20 @@ export const SCENES: Record<string, Keyframe[]> = {
     { at: 0, pose: { ...P_FINALE }, mobile: { ...P_FINALE_M } },
     {
       at: 0.4,
-      pose: { nx: 0.0, ny: 0.02, height: 1.02, ry: -0.08, rz: 0.0, ...LIGHT_ORANGE },
-      mobile: { nx: 0, ny: -0.3, height: 0.62 },
+      pose: { nx: 0.0, ny: -0.10, height: 0.7705, ry: -0.08, rz: 0.0, ...LIGHT_ORANGE },
+      mobile: { nx: 0, ny: 0.08, height: 0.713 },
       ease: "power2.out",
     },
     {
       at: 0.72,
-      pose: { nx: 0.0, ny: 0.0, height: 1.16, ry: 0.22, rz: 0.0, ...LIGHT_ORANGE },
-      mobile: { nx: 0, ny: -0.32, height: 0.66 },
+      pose: { nx: 0.0, ny: -0.10, height: 0.805, ry: 0.22, rz: 0.0, ...LIGHT_ORANGE },
+      mobile: { nx: 0, ny: 0.08, height: 0.736 },
       ease: "power1.inOut",
     },
     {
       at: 1,
-      pose: { nx: 0.0, ny: 0.02, height: 1.18, ry: 0.34, rz: 0.0, ...LIGHT_ORANGE },
-      mobile: { nx: 0, ny: -0.32, height: 0.66 },
+      pose: { nx: 0.0, ny: -0.10, height: 0.805, ry: 0.34, rz: 0.0, ...LIGHT_ORANGE },
+      mobile: { nx: 0, ny: 0.08, height: 0.736 },
       ease: "none",
     },
   ],

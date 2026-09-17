@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import { SCENES, useSceneChoreography, vw } from "@/lib/choreography";
+import { SCENES, useSceneChoreography } from "@/lib/choreography";
 import { SectionIndex } from "@/components/ui/SectionIndex";
+import styles from "./Statement.module.css";
 
 /**
  * Scene 07 — the signature frame. "CONSCIOUS" sits behind the bottle and
@@ -15,8 +16,7 @@ export function Statement() {
 
   useSceneChoreography(ref, SCENES.statement, {
     theme: "ink",
-    build: (tl, device) => {
-      const t = device === "mobile" ? 0.02 : 0.05;
+    build: (tl) => {
 
       tl.fromTo(
         "[data-st-back]",
@@ -30,24 +30,15 @@ export function Statement() {
         { yPercent: 0, ease: "expo.out", duration: 0.24 },
         0.16,
       );
-      tl.fromTo(
-        "[data-stx='back']",
-        { x: vw(-t) },
-        { x: vw(t * 0.6), ease: "none", duration: 1 },
-        0,
-      );
-      tl.fromTo(
-        "[data-stx='front']",
-        { x: vw(t * 0.7) },
-        { x: vw(-t * 0.5), ease: "none", duration: 1 },
-        0,
-      );
+      tl.fromTo("[data-st-shadow]", { opacity: 0 }, { opacity: 1, duration: .14 }, .24);
+      tl.to("[data-st-shadow]", { opacity: 0, duration: .08 }, .64);
       tl.fromTo("[data-st-meta]", { opacity: 0 }, { opacity: 1, duration: 0.14 }, 0.24);
     },
   });
 
   return (
     <section
+      id="our-position"
       ref={ref}
       aria-labelledby="statement-title"
       className="relative h-[230svh] md:h-[280svh]"
@@ -58,9 +49,10 @@ export function Statement() {
 
       {/* ---- behind the product ---- */}
       <div className="layer-behind h-svh overflow-hidden" aria-hidden="true">
-        <div className="absolute inset-0 flex items-center justify-center">
+        <span data-st-shadow className={`${styles.shadow} opacity-0`} />
+        <div className={styles.heading}>
           <span data-stx="back" className="mask block">
-            <span data-st-back className="display t-mega no-wrap block">
+            <span data-st-back className={`display no-wrap block ${styles.title}`}>
               Conscious
             </span>
           </span>
@@ -69,9 +61,9 @@ export function Statement() {
 
       {/* ---- in front of the product ---- */}
       <div className="layer-front -mt-[100svh] h-svh overflow-hidden">
-        <div className="absolute inset-x-0 bottom-[16svh] flex justify-center">
+        <div className={styles.foreground}>
           <span data-stx="front" className="mask block" aria-hidden="true">
-            <span data-st-front className="display t-xl no-wrap block">
+            <span data-st-front className={`display no-wrap block ${styles.subtitle}`}>
               Is a Choice.
             </span>
           </span>

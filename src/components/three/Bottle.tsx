@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, ContactShadows } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { RENDER } from "@/lib/scene-config";
 import { SCENE, IDLE } from "@/lib/scene-state";
@@ -24,8 +24,6 @@ export function Bottle({
   const maxAnisotropy = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
 
   const group = useRef<THREE.Group>(null);
-  const shadow = useRef<THREE.Group>(null);
-  const shadowMat = useRef<THREE.Material | null>(null);
   const parts = useRef<TunedParts | null>(null);
 
   /* The GLB is authored at real-world scale (≈185 mm tall). Normalising it to
@@ -123,17 +121,6 @@ export function Bottle({
     const s = t.h * vh * RENDER.modelScale;
     g.scale.setScalar(s);
 
-    if (shadow.current) {
-      if (!shadowMat.current) {
-        shadow.current.traverse((o) => {
-          const m = (o as THREE.Mesh).material as THREE.Material | undefined;
-          if (m && !shadowMat.current) shadowMat.current = m;
-        });
-      }
-      const target = RENDER.shadowOpacity * SCENE.shadowMul;
-      shadow.current.visible = target > 0.015;
-      if (shadowMat.current) shadowMat.current.opacity = target;
-    }
   });
 
   return (
@@ -144,20 +131,9 @@ export function Bottle({
         </group>
       </group>
 
-      {/* The model is normalised to 1 unit tall and ~0.34 wide, so the catcher
-          only needs to be a little wider than the base — a large plane with a
-          deep `far` captures the whole body and reads as a ring, not a shadow. */}
-      <group ref={shadow} position={[0, -0.508, 0]}>
-        <ContactShadows
-          opacity={RENDER.shadowOpacity}
-          scale={1.55}
-          blur={RENDER.shadowBlur}
-          far={0.5}
-          resolution={512}
-          color="#3a2410"
-          frames={Infinity}
-        />
-      </group>
+      {/* Grounding shadows live in each section's stationary background.
+          A catcher inside this rotating group tilts and drifts with the
+          bottle, producing detached dark patches during scroll transitions. */}
     </group>
   );
 }

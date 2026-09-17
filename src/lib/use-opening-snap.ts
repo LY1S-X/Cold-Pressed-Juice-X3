@@ -22,54 +22,62 @@ export function useOpeningSnap(started: boolean) {
       const gingerLanding = () => ingredients.offsetTop + ingredients.offsetHeight * 0.72;
       const benefitsLanding = () => benefits.offsetTop + benefits.offsetHeight * 0.5;
 
-      ScrollTrigger.create({
+      // Only assist inside a small physical distance of the destination.
+      // Returning the current progress leaves the rest of the scroll free.
+      const gentleSnap = {
+        snapTo: (progress: number, trigger?: ScrollTrigger) => {
+          if (!trigger) return progress;
+          const target = trigger.direction > 0 ? 1 : 0;
+          const distance = Math.abs(target - progress) * (trigger.end - trigger.start);
+          return distance <= Math.min(160, window.innerHeight * 0.18) ? target : progress;
+        },
+        inertia: false,
+        delay: 0.18,
+        duration: { min: 0.2, max: 0.45 },
+        ease: "power2.out",
+      };
+      const transitions: ScrollTrigger[] = [];
+
+      transitions.push(ScrollTrigger.create({
         id: "ginger-benefits-snap",
         start: gingerLanding,
         end: benefitsLanding,
         invalidateOnRefresh: true,
-        snap: {
-          snapTo: [0, 1],
-          directional: true,
-          inertia: false,
-          delay: 0.05,
-          duration: { min: 0.7, max: 1.2 },
-          ease: "power2.inOut",
-        },
-      });
+        snap: gentleSnap,
+      }));
 
-      ScrollTrigger.create({
+      transitions.push(ScrollTrigger.create({
         id: "opening-composition-snap",
         start: 0,
         // 54%: all words and metadata are revealed, the diagonal pose and
         // its shadow have settled, and both sticky panels are still held.
         end: productLanding,
         invalidateOnRefresh: true,
-        snap: {
-          snapTo: [0, 1],
-          directional: true,
-          inertia: false,
-          delay: 0.05,
-          duration: { min: 0.45, max: 0.9 },
-          ease: "power2.out",
-        },
-      });
+        snap: gentleSnap,
+      }));
 
-      ScrollTrigger.create({
+      transitions.push(ScrollTrigger.create({
         id: "product-pineapple-snap",
         start: productLanding,
         // 20% into Ingredients: Pineapple has entered and is still held,
         // before the one-by-one ingredient sequence advances to Apple.
         end: pineappleLanding,
         invalidateOnRefresh: true,
-        snap: {
-          snapTo: [0, 1],
-          directional: true,
-          inertia: false,
-          delay: 0.05,
-          duration: { min: 0.45, max: 0.9 },
-          ease: "power2.out",
-        },
-      });
+        snap: gentleSnap,
+      }));
+
+      const interrupt = () => transitions.forEach((trigger) => trigger.getTween(true)?.kill());
+      const interruptKey = (event: KeyboardEvent) => {
+        if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) interrupt();
+      };
+      window.addEventListener("wheel", interrupt, { passive: true });
+      window.addEventListener("touchstart", interrupt, { passive: true });
+      window.addEventListener("keydown", interruptKey);
+      return () => {
+        window.removeEventListener("wheel", interrupt);
+        window.removeEventListener("touchstart", interrupt);
+        window.removeEventListener("keydown", interruptKey);
+      };
     });
 
     return () => media.revert();
