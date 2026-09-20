@@ -130,8 +130,30 @@ export function Ingredients() {
                 className="display t-xl no-wrap absolute inset-x-0 block text-center opacity-0"
               >
                 {name}
-                <span className="mt-3 block whitespace-normal text-center font-normal normal-case tracking-normal text-[#151515] text-[clamp(12px,1.2vw,18px)] leading-snug">
-                  {PRODUCT.ingredientNotes[name]}
+                <span className="mt-3 block text-center font-normal normal-case tracking-normal text-[clamp(12px,1.2vw,18px)] leading-snug">
+                  <svg
+                    role="img"
+                    aria-label={PRODUCT.ingredientNotes[name]}
+                    className="mx-auto block max-w-full"
+                    style={{ width: `${PRODUCT.ingredientNotes[name].length * 0.55 + 2}em`, height: "2em" }}
+                    viewBox={`0 0 ${PRODUCT.ingredientNotes[name].length * 6.6 + 24} 24`}
+                  >
+                    <defs>
+                      <mask id={`ingredient-note-${name.toLowerCase()}`}>
+                        <rect width="100%" height="24" rx="12" fill="white" />
+                        <text
+                          x="50%" y="12" dy=".35em" textAnchor="middle"
+                          fill="black" fontSize="12" fontWeight="500"
+                          fontFamily="Arial, sans-serif"
+                          textLength={PRODUCT.ingredientNotes[name].length * 6.6}
+                          lengthAdjust="spacingAndGlyphs"
+                        >
+                          {PRODUCT.ingredientNotes[name]}
+                        </text>
+                      </mask>
+                    </defs>
+                    <rect width="100%" height="24" rx="12" fill="#f5f1e7" mask={`url(#ingredient-note-${name.toLowerCase()})`} />
+                  </svg>
                 </span>
               </li>
             ))}
