@@ -67,6 +67,10 @@ export function resolveKeyframe(k: Keyframe, device: Device): ScenePose {
       // is about 0.34 as wide as it is tall; allow room for its rotation.
       height: stacked ? Math.max(0.12, (productBottom - productTop) / height) : Math.min(0.68, (width * 0.25) / (height * 0.37)),
     });
+    // Phone-only refinement; retain the existing centre and desktop/tablet fit.
+    if (device === "mobile" && typeof merged.height === "number") {
+      merged.height *= 1.1;
+    }
   }
   return merged;
 }
@@ -151,6 +155,7 @@ export const HERO_POSE_MOBILE: ScenePose = {
   ny: -0.2,
   height: 0.56,
   ry: -0.22,
+  rz: -0.07, // Four-degree phone-only lean.
 };
 
 /** Where the hero hands the product over to the first scrubbed scene. */
@@ -214,14 +219,14 @@ export const SCENES: Record<string, Keyframe[]> = {
     {
       at: 0.34,
       pose: { nx: 0.12, ny: 0.02, z: 0, height: 1.12, rx: 0, ry: -0.18, rz: -0.58, ...LIGHT_PRODUCT },
-      mobile: { nx: 0, ny: -0.03, height: 0.72, rz: -0.48 },
+      mobile: { nx: 0, ny: -0.03, height: 0.58, rz: -0.48 },
       tablet: { nx: 0.12, height: 0.94 },
       ease: "power1.out",
     },
     {
       at: 0.62,
       pose: { nx: 0.06, ny: 0.02, z: 0, height: 1.12, rx: 0, ry: -0.08, rz: -0.62, ...LIGHT_PRODUCT },
-      mobile: { nx: -0.02, ny: -0.03, height: 0.72, rz: -0.52 },
+      mobile: { nx: -0.02, ny: -0.03, height: 0.58, rz: -0.52 },
       tablet: { nx: 0.06, height: 0.94 },
       ease: "none",
     },
@@ -499,8 +504,14 @@ export function useSceneChoreography(
           start: "top 60%",
           end: "bottom 40%",
           onEnter: () =>
-            Object.assign(SCENE, resolveKeyframe(keys[keys.length - 1], device)),
-          onEnterBack: () => Object.assign(SCENE, resolveKeyframe(keys[0], device)),
+            Object.assign(SCENE, resolveKeyframe(keys[keys.length - 1], readDevice())),
+          onEnterBack: () => Object.assign(SCENE, resolveKeyframe(keys[0], readDevice())),
+          onRefresh: (self) => {
+            if (self.isActive) {
+              const key = self.direction < 0 ? keys[0] : keys[keys.length - 1];
+              Object.assign(SCENE, resolveKeyframe(key, readDevice()));
+            }
+          },
         });
 
         if (opts.theme) {
@@ -553,17 +564,19 @@ export function useSceneChoreography(
       for (let i = 1; i < keys.length; i++) {
         const from = resolveKeyframe(keys[i - 1], device);
         const to = resolveKeyframe(keys[i], device);
+        // Every scene resolves the current breakpoint on refresh instead
+        // of keeping the bottle pose captured when the page first mounted.
+        const livePose = (keyframe: Keyframe, pose: ScenePose) =>
+          Object.fromEntries(Object.keys(pose).map((key) => [
+            key,
+            () => resolveKeyframe(keyframe, readDevice())[key as keyof ScenePose],
+          ]));
         const dur = Math.max(0.0001, keys[i].at - keys[i - 1].at);
         tl.fromTo(
           SCENE,
-          keys[i - 1].heroViewport
-            ? Object.fromEntries(Object.keys(from).map((key) => [
-                key,
-                () => resolveKeyframe(keys[i - 1], readDevice())[key as keyof ScenePose],
-              ]))
-            : { ...from },
+          livePose(keys[i - 1], from),
           {
-            ...to,
+            ...livePose(keys[i], to),
             duration: dur,
             ease: keys[i].ease ?? "none",
             immediateRender: false,
