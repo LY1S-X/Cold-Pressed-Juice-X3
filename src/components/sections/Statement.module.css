@@ -2,6 +2,8 @@
 .title { font-size: min(16.4vw, 25.5svh); line-height: .9; }
 .foreground { position: absolute; inset-inline: 4%; top: 74svh; display: flex; justify-content: center; }
 .subtitle { font-size: min(10.8vw, 16svh); line-height: .92; }
+.motto { font-size: clamp(14px, 1.9vw, 30px); line-height: 1.25; font-weight: 600; letter-spacing: -.025em; text-align: right; color: var(--scene-fg); border-right: 2px solid #F4700A; padding-right: 14px; }
+.motto span { color: #F4700A; }
 .shadow { position: absolute; left: 49%; top: 92svh; width: min(25vw, 35svh); height: 3svh; transform: translate(-50%, -50%); background: radial-gradient(ellipse, rgb(0 0 0 / 70%), transparent 72%); filter: blur(6px); }
 @media (max-width: 639px) {
   .heading { top: 19svh; }

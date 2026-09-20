@@ -69,7 +69,7 @@ export function Finale() {
           <h2 id="finale-title" className="display">
             <span className="mask block">
               <span data-fin-line className={`no-wrap block ${styles.brand}`}>
-                Conscious Choice
+                Ready for your Kick-Start
               </span>
             </span>
             <span className="mask mt-3 block">
@@ -92,7 +92,7 @@ export function Finale() {
             </div>
 
             <div data-fin-fade className="opacity-0">
-              <p className="t-label mb-2.5 text-[color:var(--scene-dim)]">Volume</p>
+              <p className="t-label mb-2.5 text-[color:var(--scene-dim)]">Fresh. Cold-pressed. Simple.</p>
               <p className={`display ${styles.value}`}>300 ml</p>
             </div>
 

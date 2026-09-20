@@ -1,0 +1,9 @@
+.footer { min-height: 100svh; display: flex; flex-direction: column; padding-top: 12svh; }
+.signature { flex: 1; min-height: 53svh; display: flex; align-items: center; justify-content: center; padding-block: 6svh; }
+.motto { width: 100%; text-align: center; font-size: min(8.7vw, 15svh); line-height: 1.08; letter-spacing: -.045em; }
+.mask { display: block; overflow: hidden; }
+.mask > span { display: block; }
+@media (max-width: 639px) {
+  .signature { min-height: 48svh; }
+  .motto { font-size: 8.6vw; line-height: 1.2; }
+}

@@ -27,7 +27,7 @@ export function ColdPressed() {
           <h2 id="coldpressed-title" className={`display ${styles.title}`}>
             {["Less heat.", "More of", "What matters."].map(line => <span className="mask" key={line}><span data-cp-line>{line}</span></span>)}
           </h2>
-          <p data-cp-detail className={`${styles.copy} opacity-0`}>Cold pressing uses hydraulic pressure rather than high-speed, heat-intensive processing — helping preserve the fresh taste and character of the ingredients.</p>
+          <p data-cp-detail className={`${styles.copy} opacity-0`}>Cold-pressed from real ingredients, then bottled fresh and kept cold. Less processing. Nothing unnecessary.</p>
         </div>
         <ul data-cp-detail className={`${styles.steps} opacity-0`}>
           {["Press slowly", "Keep it cold", "Taste the difference"].map((step, i) => <li key={step}>
@@ -36,7 +36,7 @@ export function ColdPressed() {
             </svg><span>{step}</span>
           </li>)}
         </ul>
-        <footer data-cp-detail className={`${styles.footer} opacity-0`}><span>Slow press. Full character.</span><span>Conscious Choice / 300 ml</span></footer>
+        <footer data-cp-detail className={`${styles.footer} opacity-0`}><span>Cold-pressed. Fresh. Simple.</span><span>Conscious Choice / 300 ml</span></footer>
       </div>
     </section>
   );

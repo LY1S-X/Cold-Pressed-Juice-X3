@@ -79,20 +79,24 @@ export function CloseUp() {
               data-cu-detail
               className={`${styles.copy} opacity-0`}
             >
-              Recyclable PET. A full-wrap print. And nothing on the ingredient
-              list you need to look up.
+              Original Kick-Start · 300 mL.<br />
+              Pineapple, apple, carrot and ginger. Nothing unnecessary.
             </p>
 
             <dl
               data-cu-detail
               className={`${styles.nutrition} opacity-0`}
             >
-              {PRODUCT.nutrition.slice(0, 6).map(([k, v]) => (
+              {PRODUCT.nutrition.map(([k, v]) => (
                 <div key={k} className="contents">
                   <dt className="text-[color:var(--scene-dim)]">{k}</dt>
                   <dd className="text-right tabular-nums">{v}</dd>
                 </div>
               ))}
+              <div className={styles.disclaimer}>
+                <dt className="sr-only">Nutrition note</dt>
+                <dd>Values are based on the current formulation and may vary slightly with natural ingredient variation.</dd>
+              </div>
             </dl>
           </div>
         </div>

@@ -75,8 +75,8 @@ export function Statement() {
         >
           <div className="flex items-end justify-between gap-8">
             <SectionIndex n="07" label="Our Position" />
-            <p className="t-label max-w-[24ch] text-right text-[color:var(--scene-dim)]">
-              Nourish your body. Honor the earth.
+            <p className={styles.motto}>
+              Nourish your body.<br /><span>Honor the Earth.</span>
             </p>
           </div>
         </div>

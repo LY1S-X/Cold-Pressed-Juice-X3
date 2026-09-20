@@ -130,6 +130,9 @@ export function Ingredients() {
                 className="display t-xl no-wrap absolute inset-x-0 block text-center opacity-0"
               >
                 {name}
+                <span className="mt-3 block whitespace-normal text-center font-normal normal-case tracking-normal text-[#151515] text-[clamp(12px,1.2vw,18px)] leading-snug">
+                  {PRODUCT.ingredientNotes[name]}
+                </span>
               </li>
             ))}
           </ul>

@@ -77,7 +77,7 @@ export function Hero({ started }: { started: boolean }) {
             ))}
           </h1>
           <div data-hero-copy className={styles.copy}>
-            <p data-hero-fade className={`t-body opacity-0 ${styles.support}`}>Freshly pressed in Bangkok.</p>
+            <p data-hero-fade className={`t-body opacity-0 ${styles.support}`}>Freshly made in Bangkok.</p>
             <a data-hero-fade href="#our-juice"
               onClick={(e) => {
                 e.preventDefault();

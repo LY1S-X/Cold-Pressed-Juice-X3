@@ -63,16 +63,15 @@ export function Story() {
             </h2>
 
             <p data-story-fade className={styles.copy}>
-              Conscious Choice is about making the everyday choice feel simple —
-              real ingredients, fresh flavour, and a bottle designed for life in
-              Bangkok.
+              Made fresh in Bangkok for people who want better choices without
+              making life complicated.
             </p>
             <p
               data-story-fade
               className={`${styles.copy} ${styles.secondary}`}
             >
-              Four things go in. Nothing else does. That is the whole idea, and
-              it is the reason the label is short enough to read in one breath.
+              We’re not trying to put everything into one bottle. Just real
+              ingredients, cold-pressed juice and fresh preparation. That’s Conscious Choice.
             </p>
             <div className={styles.ingredients}>
               <span data-story-rule className={styles.rule} />

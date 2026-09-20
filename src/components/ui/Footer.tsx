@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { useSceneChoreography, type Keyframe } from "@/lib/choreography";
 import { PRODUCT } from "@/lib/brand";
+import { gsap, useIsoLayoutEffect } from "@/lib/gsap";
+import styles from "./Footer.module.css";
 
 /** The product bows out as the footer arrives, so the closing frame is clean. */
 const EXIT: Keyframe[] = [
@@ -21,6 +23,17 @@ const EXIT: Keyframe[] = [
 
 export function Footer() {
   const ref = useRef<HTMLElement>(null);
+  useIsoLayoutEffect(() => {
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.fromTo("[data-footer-line]", { yPercent: 105, opacity: 0 }, {
+        yPercent: 0, opacity: 1, duration: 1.15, stagger: 0.16,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ref.current, start: "top 30%", once: true },
+      });
+    }, ref);
+    return () => media.revert();
+  }, []);
   useSceneChoreography(ref, EXIT, {
     theme: "ink",
     start: "top bottom",
@@ -30,8 +43,14 @@ export function Footer() {
   return (
     <footer
       ref={ref}
-      className="relative z-30 flex min-h-[86svh] flex-col justify-end px-5 pb-10 pt-[30svh] text-[color:var(--scene-fg)] md:px-8 lg:px-10"
+      className={`relative z-30 px-5 pb-10 text-[color:var(--scene-fg)] md:px-8 lg:px-10 ${styles.footer}`}
     >
+      <div className={styles.signature}>
+        <p className={`display ${styles.motto}`}>
+          <span className={styles.mask}><span data-footer-line>Nourish your body.</span></span>
+          <span className={styles.mask}><span data-footer-line className="text-[#F4700A]">Honor the Earth.</span></span>
+        </p>
+      </div>
       <div className="rule mb-8" />
       <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <div>

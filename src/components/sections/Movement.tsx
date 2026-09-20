@@ -81,7 +81,8 @@ export function Movement() {
               data-mv-meta
               className="t-body max-w-[30ch] text-[color:var(--scene-dim)]"
             >
-              One blend. Four ingredients. Pressed cold, bottled cold, kept cold.
+              <strong className="block font-medium">Four ingredients. Nothing else.</strong>
+              A bright, naturally sweet blend with a gentle kick of fresh ginger.
             </p>
             <span className="mask block shrink-0">
               <span data-vol className="display t-lg block">
