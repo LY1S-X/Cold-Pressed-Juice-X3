@@ -106,7 +106,7 @@ export function Finale() {
             <div className={styles.action}>
               <a
                 data-fin-cta
-                href="mailto:hello@consciouschoice.co?subject=Original%20Kick-Start"
+                href="/order"
                 className={`t-label pointer-events-auto ${styles.cta} opacity-0`}
               >
                 Get Your Kick-Start

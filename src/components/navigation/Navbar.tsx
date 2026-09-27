@@ -89,11 +89,7 @@ export function Navbar() {
               </a>
             ))}
             <a
-              href="#order"
-              onClick={(e) => {
-                e.preventDefault();
-                go("#order");
-              }}
+              href="/order"
               className="t-label rounded-full border border-current px-5 py-2.5 transition-colors duration-300 hover:bg-[color:var(--scene-fg)] hover:text-[color:var(--scene-bg)]"
             >
               Order Now
@@ -129,11 +125,12 @@ export function Navbar() {
       >
         <div className="flex h-full flex-col justify-between px-5 pb-10 pt-28">
           <ul className="space-y-1">
-            {[...LINKS, { label: "Order Now", href: "#order" }].map((l) => (
+            {[...LINKS, { label: "Order Now", href: "/order" }].map((l) => (
               <li key={l.href}>
                 <a
                   href={l.href}
                   onClick={(e) => {
+                    if (l.href === "/order") return;
                     e.preventDefault();
                     go(l.href);
                   }}
