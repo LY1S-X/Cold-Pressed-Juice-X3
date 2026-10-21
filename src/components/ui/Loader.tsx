@@ -1,101 +1,73 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useProgress } from "@react-three/drei";
 import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/breakpoints";
 import { onProductReady } from "@/lib/ready";
+import styles from "./Loader.module.css";
 
-/**
- * Brand loader. No browser-chrome percentage widget — a wordmark, a rule that
- * draws itself, and a clean wipe into the hero. It clears on the product's own
- * ready signal, with a hard ceiling so a slow network can never trap the page.
- */
+/** Product readiness releases the loader; retain the slow-network fail-safe. */
 export function Loader({ onDone }: { onDone?: () => void }) {
   const { progress } = useProgress();
   const root = useRef<HTMLDivElement>(null);
-  const bar = useRef<HTMLSpanElement>(null);
-  const [gone, setGone] = useState(false);
+  const number = useRef<HTMLSpanElement>(null);
+  const counter = useRef({ value: 0 });
   const settled = useRef(false);
-  const mounted = useRef(0);
+  const [gone, setGone] = useState(false);
 
   useEffect(() => {
-    if (!bar.current) return;
-    gsap.to(bar.current, {
-      scaleX: Math.max(0.05, Math.min(0.96, progress / 100)),
-      duration: 0.7,
-      ease: "power2.out",
-      overwrite: "auto",
+    if (settled.current) return;
+    const tween = gsap.to(counter.current, {
+      value: Math.max(counter.current.value, Math.min(96, progress)),
+      duration: 0.7, ease: "power2.out",
+      onUpdate: () => {
+        if (number.current) number.current.textContent = String(Math.round(counter.current.value)).padStart(3, "0");
+      },
     });
+    return () => { tween.kill(); };
   }, [progress]);
 
   useEffect(() => {
-    mounted.current = Date.now();
-
+    settled.current = false;
+    const mounted = Date.now();
+    let timeline: gsap.core.Timeline | undefined;
+    let timer: number | undefined;
     const finish = () => {
       if (settled.current) return;
       settled.current = true;
-
-      const wait = Math.max(0, 850 - (Date.now() - mounted.current));
-      const done = () => {
-        setGone(true);
-        onDone?.();
-      };
-
+      const wait = Math.max(0, 850 - (Date.now() - mounted));
+      const done = () => { setGone(true); onDone?.(); };
       if (prefersReducedMotion()) {
-        window.setTimeout(done, wait);
+        if (number.current) number.current.textContent = "100";
+        timer = window.setTimeout(done, wait);
         return;
       }
-
-      const lines = root.current?.querySelectorAll("[data-loader-line]") ?? [];
-      const tl = gsap.timeline({ delay: wait / 1000, onComplete: done });
-      tl.to(bar.current, { scaleX: 1, duration: 0.5, ease: "power3.inOut", overwrite: true })
-        .to(lines, { yPercent: -130, duration: 0.8, stagger: 0.07, ease: "expo.inOut" }, "-=0.12")
-        .to(root.current, { yPercent: -100, duration: 0.95, ease: "expo.inOut" }, "-=0.5");
+      timeline = gsap.timeline({ delay: wait / 1000, onComplete: done });
+      timeline.to(counter.current, {
+        value: 100, duration: 0.5, overwrite: true,
+        onUpdate: () => {
+          if (number.current) number.current.textContent = String(Math.round(counter.current.value)).padStart(3, "0");
+        },
+      }).to(root.current, { yPercent: -100, duration: 0.95, ease: "expo.inOut" }, "+=0.1");
     };
-
     const off = onProductReady(finish);
     const bail = window.setTimeout(finish, 6000);
-    return () => {
-      off();
-      clearTimeout(bail);
-    };
+    return () => { off(); clearTimeout(bail); clearTimeout(timer); timeline?.kill(); };
   }, [onDone]);
 
   if (gone) return null;
-
   return (
-    <div
-      ref={root}
-      className="fixed inset-0 z-[100] flex flex-col justify-between bg-cream px-5 pb-10 pt-28 text-ink md:px-8"
-      role="status"
-      aria-live="polite"
-    >
+    <div ref={root} className={styles.loader} role="status" aria-live="polite">
       <span className="sr-only">Loading Conscious Choice</span>
-
-      <div aria-hidden="true">
-        <span className="mask block">
-          <span data-loader-line className="display t-xl block">
-            Conscious
-          </span>
-        </span>
-        <span className="mask block">
-          <span data-loader-line className="display t-xl block pl-[8vw]">
-            Choice
-          </span>
-        </span>
+      <div className={styles.center} aria-hidden="true">
+        <div className={styles.fruit}>
+          <Image src="/pineapple-loader.webp" alt="" width={538} height={800} preload unoptimized className={styles.image} />
+        </div>
+        <div className={styles.counter}><span ref={number}>000</span><span className={styles.percent}>%</span></div>
       </div>
-
-      <div aria-hidden="true" className="flex items-end justify-between gap-6">
-        <span className="mask block">
-          <span data-loader-line className="t-label block max-w-[18ch] text-ink/55">
-            Cold-Pressed Juice — Bangkok
-          </span>
-        </span>
-        <span className="relative block h-px w-[48vw] max-w-[520px] bg-ink/15">
-          <span ref={bar} className="absolute inset-0 block origin-left scale-x-0 bg-ink" />
-        </span>
-      </div>
+      <div className={styles.brand} aria-hidden="true">Conscious Choice<span>Nourish your body. Honor the Earth.</span></div>
     </div>
   );
 }
