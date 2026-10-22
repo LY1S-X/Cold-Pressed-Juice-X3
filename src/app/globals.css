@@ -71,6 +71,11 @@ body {
 }
 .stage-layer {
   z-index: 20;
+  /* The loader translates the page ancestor. Keep the canvas viewport-sized
+     while that transform makes it the fixed layer's containing block, rather
+     than stretching the canvas to the entire landing document's height. */
+  bottom: auto;
+  height: 100dvh;
 }
 
 /* ---------------------------------------------------------------

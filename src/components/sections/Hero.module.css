@@ -42,7 +42,7 @@
 .cta:hover { background: var(--scene-fg); color: var(--scene-bg); }
 .cta:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
 .footer { position: absolute; left: var(--hero-gutter); right: var(--hero-gutter); bottom: 4svh; }
-.rule { display: block; height: 1px; background: var(--scene-line); transform: scaleX(0); }
+.rule { display: block; height: 1px; background: var(--scene-line); }
 .details { display: flex; justify-content: space-between; align-items: flex-start; padding-top: 24px; }
 .scroll { display: flex; flex-direction: column; gap: 10px; }
 .scroll > span { width: 1px; height: 25px; margin-left: 1px; background: currentColor; opacity: 0.5; }

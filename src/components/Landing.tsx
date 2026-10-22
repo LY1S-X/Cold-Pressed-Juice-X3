@@ -25,11 +25,12 @@ export function Landing() {
   return (
     <>
       <Loader onDone={onDone} />
+      <div data-loader-page>
       <StageMount />
       <Navbar />
 
       <main className="page-clip relative">
-        <Hero started={started} />
+        <Hero />
         <Movement />
         <Ingredients />
         <Benefits />
@@ -40,6 +41,7 @@ export function Landing() {
         <Finale />
         <Footer />
       </main>
+      </div>
     </>
   );
 }
